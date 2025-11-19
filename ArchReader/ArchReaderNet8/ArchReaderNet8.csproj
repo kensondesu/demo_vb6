@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    ArchReader - .NET 8 Migration
+    
+    This is a migration of the ArchReader VB6 application to .NET 8.
+    Original: Visual Basic 6.0 Application
+    Migrated to: .NET 8.0 Windows Forms Application
+    
+    Copyright (C) 2008-2025 MYPLACE
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>ArchReaderNet8</AssemblyName>
+    <RootNamespace>ArchReaderNet8</RootNamespace>
+    <Version>2.0.0</Version>
+    <Authors>MYPLACE</Authors>
+    <Company>MYPLACE</Company>
+    <Product>ArchReader</Product>
+    <Description>Archive Reader - Migrated from VB6 to .NET 8</Description>
+    <Copyright>Copyright (C) 2008-2025 MYPLACE</Copyright>
+  </PropertyGroup>
+
+</Project>
