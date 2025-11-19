@@ -119,7 +119,6 @@ namespace ArchReaderNet8
                     statusLabel.Text = $"Loading: {filePath}";
                 }
 
-                // TODO: Implement archive loading
                 var processer = new CProcesser();
                 var archive = processer.OpenFile(filePath);
 
@@ -127,18 +126,59 @@ namespace ArchReaderNet8
                 {
                     treeView.Nodes.Clear();
                     var rootNode = treeView.Nodes.Add(archive.Title ?? "Archive");
+                    rootNode.Tag = archive;
                     
-                    foreach (var entry in archive.Entries)
+                    // Add metadata if available
+                    if (!string.IsNullOrEmpty(archive.Author))
                     {
-                        rootNode.Nodes.Add(entry);
+                        rootNode.Text += $" - {archive.Author}";
+                    }
+
+                    // Build tree structure from entries
+                    var folderNodes = new Dictionary<string, TreeNode>();
+                    
+                    foreach (var entry in archive.Entries.OrderBy(e => e))
+                    {
+                        var parts = entry.Split('/', '\\');
+                        TreeNode parentNode = rootNode;
+
+                        // Create folder nodes
+                        for (int i = 0; i < parts.Length - 1; i++)
+                        {
+                            var folderPath = string.Join("/", parts.Take(i + 1));
+                            
+                            if (!folderNodes.TryGetValue(folderPath, out var folderNode))
+                            {
+                                folderNode = parentNode.Nodes.Add(parts[i]);
+                                folderNode.Tag = folderPath;
+                                folderNodes[folderPath] = folderNode;
+                            }
+                            
+                            parentNode = folderNode;
+                        }
+
+                        // Add file node
+                        var fileNode = parentNode.Nodes.Add(parts[^1]);
+                        fileNode.Tag = entry;
                     }
 
                     rootNode.Expand();
-                }
 
-                if (statusLabel != null)
+                    if (statusLabel != null)
+                    {
+                        var fileCount = archive.Entries.Length;
+                        statusLabel.Text = $"Loaded: {Path.GetFileName(filePath)} ({fileCount} files)";
+                    }
+                }
+                else
                 {
-                    statusLabel.Text = $"Loaded: {Path.GetFileName(filePath)}";
+                    MessageBox.Show("Unable to load archive. The file may be corrupted or in an unsupported format.", 
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    
+                    if (statusLabel != null)
+                    {
+                        statusLabel.Text = "Failed to load archive";
+                    }
                 }
             }
             catch (Exception ex)
