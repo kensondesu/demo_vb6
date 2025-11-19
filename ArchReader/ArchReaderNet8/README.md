@@ -10,10 +10,12 @@ This is a migration of the ArchReader VB6 application to .NET 8 using Windows Fo
 
 ## Features
 
-- Archive file reader
-- Tree view navigation
-- Document viewing capabilities
-- Plugin architecture support
+- **ZIP Archive Support**: Open and browse ZIP archives
+- **Tree View Navigation**: Hierarchical display of archive contents
+- **Document Viewer**: Preview text files, images, and other content
+- **File Type Detection**: Automatic detection and handling of different file types
+- **Metadata Display**: Shows archive information (title, author, publisher)
+- **Cross-Platform Ready**: Built on .NET 8 with Windows Forms
 
 ## Building the Application
 
@@ -34,10 +36,11 @@ The application follows the original VB6 architecture with the following compone
 ### Core Classes
 
 - **CArchive**: Represents an archive with metadata (title, author, publisher, etc.)
-- **CProcesser**: Handles archive operations (open file, folder, URL)
+- **CProcesser**: Handles archive operations (open file, folder, URL) with ZIP support
 - **CURLInfo**: Parses and stores URL information
 - **CStringPair**: Utility class for key-value pairs
 - **CDocumentInfo**: Document metadata
+- **Utilities**: Helper functions for path handling, MIME types, and file operations
 
 ### Interfaces
 
@@ -45,9 +48,10 @@ The application follows the original VB6 architecture with the following compone
 - **IViewer**: Interface for document viewing
 - **IDocumentHandler**: Interface for document handling
 
-### Forms
+### UI Components
 
-- **MainForm**: Main application window with tree view and content panel
+- **MainForm**: Main application window with menu, tree view, and document viewer
+- **DocumentViewer**: Custom control for viewing text files, images, and other content
 
 ## Migration Notes
 
@@ -60,23 +64,36 @@ The application follows the original VB6 architecture with the following compone
 5. **Error Handling**: VB6 error handling converted to try-catch blocks
 6. **Collections**: VB6 collections converted to .NET collections
 
-### Not Yet Implemented
+### Implemented Features
 
-The following features from the original VB6 application need implementation:
+✅ ZIP archive reading and browsing  
+✅ Hierarchical tree view with folder structure  
+✅ Text file viewer (txt, html, xml, json, code files)  
+✅ Image viewer (jpg, png, gif, bmp)  
+✅ Metadata parsing from archive info files  
+✅ Menu system (File, View, Help)  
+✅ Status bar with file information  
+✅ File size formatting  
+✅ MIME type detection  
 
-1. Archive file loading (ZIP support)
-2. HTML document viewing
-3. Plugin system
-4. HTTP server functionality
-5. Bookmark management
-6. Options/Settings dialog
-7. Full navigation features
+### Future Enhancements
 
-### Dependencies Needed
+The following features from the original VB6 application could be added:
 
-- **System.IO.Compression**: For ZIP archive support
-- **Microsoft.Web.WebView2.WinForms**: For modern web content display
-- **HtmlAgilityPack** (optional): For HTML parsing
+1. **WebView2 Integration**: For HTML document viewing with JavaScript support
+2. **Plugin System**: Extensible architecture for custom readers and viewers
+3. **HTTP Server**: Built-in web server for remote access
+4. **Bookmark Management**: Save and manage favorite archive entries
+5. **Options Dialog**: User preferences and settings
+6. **Advanced Navigation**: History, search, and filtering
+7. **RAR/7Z Support**: Additional archive format support
+8. **File Extraction**: Extract files from archives
+
+### Dependencies
+
+- **System.IO.Compression**: Used for ZIP archive support (built-in to .NET)
+- **System.Windows.Forms**: Windows Forms UI framework
+- **System.Drawing**: For image display capabilities
 
 ## License
 

@@ -11,7 +11,9 @@ namespace ArchReaderNet8
         private StatusStrip? statusStrip;
         private ToolStripStatusLabel? statusLabel;
         private SplitContainer? splitContainer;
-        private Panel? contentPanel;
+        private DocumentViewer? documentViewer;
+        private string? currentArchivePath;
+        private CArchive? currentArchive;
 
         public MainForm()
         {
@@ -40,16 +42,16 @@ namespace ArchReaderNet8
                 Dock = DockStyle.Fill,
                 Name = "treeView"
             };
+            treeView.AfterSelect += OnTreeViewSelect;
             splitContainer.Panel1.Controls.Add(treeView);
 
-            // Create content panel
-            contentPanel = new Panel
+            // Create document viewer
+            documentViewer = new DocumentViewer
             {
                 Dock = DockStyle.Fill,
-                Name = "contentPanel",
-                BackColor = System.Drawing.Color.White
+                Name = "documentViewer"
             };
-            splitContainer.Panel2.Controls.Add(contentPanel);
+            splitContainer.Panel2.Controls.Add(documentViewer);
 
             // Create status strip
             statusStrip = new StatusStrip();
@@ -124,6 +126,15 @@ namespace ArchReaderNet8
 
                 if (archive != null && treeView != null)
                 {
+                    currentArchivePath = filePath;
+                    currentArchive = archive;
+
+                    if (documentViewer != null)
+                    {
+                        documentViewer.SetArchive(filePath, archive);
+                        documentViewer.Clear();
+                    }
+
                     treeView.Nodes.Clear();
                     var rootNode = treeView.Nodes.Add(archive.Title ?? "Archive");
                     rootNode.Tag = archive;
@@ -200,6 +211,35 @@ namespace ArchReaderNet8
                 statusLabel.Text = "Refreshing...";
             }
             // TODO: Implement refresh logic
+        }
+
+        private void OnTreeViewSelect(object? sender, TreeViewEventArgs e)
+        {
+            if (e.Node?.Tag is string entryPath && documentViewer != null)
+            {
+                // Check if it's a file entry (not a folder or root)
+                if (!string.IsNullOrEmpty(currentArchivePath) && 
+                    currentArchive != null && 
+                    currentArchive.Entries.Contains(entryPath))
+                {
+                    try
+                    {
+                        documentViewer.ViewEntry(entryPath);
+                        
+                        if (statusLabel != null)
+                        {
+                            statusLabel.Text = $"Viewing: {Path.GetFileName(entryPath)}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (statusLabel != null)
+                        {
+                            statusLabel.Text = $"Error: {ex.Message}";
+                        }
+                    }
+                }
+            }
         }
 
         private void OnAbout(object? sender, EventArgs e)
